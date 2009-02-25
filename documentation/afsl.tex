@@ -1,0 +1,61 @@
+\documentclass[a4paper,twoside,titlepage]{article}
+\usepackage[top=3cm,bottom=3cm,left=3cm,right=3cm]{geometry}
+\usepackage{url}
+
+\renewcommand\familydefault{\sfdefault}
+
+\title{Advanced Filesystem Layout}
+\author{Magnus Achim Deininger}
+
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\newpage
+
+\section*{Preface}
+\addcontentsline{toc}{section}{Preface}
+Current filesystem layouts employed by contemporary operating systems suffer
+from a number of shortcomings. Among the more common of these are general
+inconsistencies and issues with contemporary multi-architecture systems. Minor,
+similar issues occur when trying to develop for architectures other than that of
+the host system. In general, it is becoming increasingly common that binaries
+(executables and libraries) of distinct systems occur together on a single
+system. Examples for these would include contemporary desktop systems with
+``64-bit'' capabilities mixing binaries compiled for x86-64 and x86-32 on the
+same filesystem with poor separation, or average Linux installations containing
+binaries intended for Microsoft Windows for use with WINE, or FreeBSD
+installations including binaries intended for Linux.
+
+This has lead to what may be perceived as inconsistencies in order to fix some
+of these issues, such as the lib/lib32/lib64 dilemma that would require sane
+software build scripts to figure out in which of these directories to put
+created libraries. This alone is already inconsistent with requirements that
+expressly forbid this -32/-64 extension on bin/ directories\footnote{See the FHS
+document for details.}, and the idea itself seems rather hackish.
+
+Additionally, the original reasoning behind a split of the root filesystem and
+the /usr hierarchy (and also somewhat the /opt and /usr/local hierarchies) seems
+to have been to be able to separate machine-local binaries and configuration
+from site-local binaries and shared data and read-only from read-write data.
+Originally a physical separation between the hierarchies was necessary, but due
+to the ability of contemporary operating systems to unify multiple filesystem
+hierarchies, sometimes called "union mounts", this division seems quite obsolete
+\footnote{Operating Systems such as Plan 9 seem to agree with this.}.
+
+This paper will try to explore an alternative filesystem hierarchy scheme that
+should provide consistency for years to come.
+\newpage
+\section{The Advanced Filesystem Layout}
+\subsection{POSIX-compatibility considerations}
+
+
+\newpage
+
+\begin{thebibliography}{alpha}
+\addcontentsline{toc}{section}{References}
+
+\end{thebibliography}
+
+\end{document}
