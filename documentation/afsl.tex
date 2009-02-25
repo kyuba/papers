@@ -47,9 +47,20 @@ hierarchies, sometimes called "union mounts", this division seems quite obsolete
 This paper will try to explore an alternative filesystem hierarchy scheme that
 should provide consistency for years to come.
 \newpage
-\section{The Advanced Filesystem Layout}
-\subsection{POSIX-compatibility considerations}
 
+\section{The Advanced Filesystem Layout}
+The general idea behind this filesystem layout is fairly simple: "traditional"
+directories are at the end of an arbitrarily long list of host specifications.
+This leads to a general layout that looks something like this:
+$os/architecture/subarchitecture/(bin|lib)$. The idea is to get more and more
+specific along the path, with the operating system being considered less
+specific than the hardware architecture. This latter choice is fairly random,
+but it seems to be easier or more common to run binaries from a different
+architecture on the same operating system than it is to run binaries from a
+different operating system even when on the same architecture (although there
+are legimitate examples of both).
+
+\subsection{POSIX-compatibility considerations}
 
 \newpage
 
