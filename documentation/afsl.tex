@@ -46,6 +46,7 @@ hierarchies, sometimes called "union mounts", this division seems quite obsolete
 
 This paper will try to explore an alternative filesystem hierarchy scheme that
 should provide consistency for years to come.
+
 \newpage
 
 \section{The Advanced Filesystem Layout}
@@ -60,7 +61,55 @@ architecture on the same operating system than it is to run binaries from a
 different operating system even when on the same architecture (although there
 are legimitate examples of both).
 
-\subsection{POSIX-compatibility considerations}
+\newpage
+
+\section{Issues with Legacy Systems}
+There are some obvious incompatibilities with legacy filesystem layouts, at
+least when employing the more descriptive paths.
+
+\subsection{POSIX Compatibility Considerations}
+The most notable problem to be encountered with live multi-host setups is the
+likely lack of an appropriate /bin/sh binary. It should be possible to
+circumvent this issue with either automatically created symlinks on boot or
+with strategic application of namespaces.
+
+It should be noted that this problem is easily be underestimated. Current BSD
+and Linux systems, for example, employ a large amount of shell scripting for
+common functionality, including things such as the ``init scripts'' that are
+responsible for bringing up system services. In these script files, the first
+line starts with a shabang, followed by the path to a script interpreter. Since
+POSIX guarantees that /bin/sh is a valid shell script interpreter, scripts `out
+in the wild' will rely on this and reference this location. The same applies to
+the system() function in the standard C library.
+
+\subsection{Booting}
+During bootup the kernel needs to find and execute any binaries on the root
+filesystem that are required to boot into userspace. With most other fielsystem
+layouts, this is easily done, as the binaries were usually always in the same,
+so it's just a matter of hardcoding the location, however with this new layout
+it's not quite that easy anymore, as the location of the binary might depend on
+the host the computer is run on. (`might depend', because /bin/init would still
+be a legitimate path with this filesystem layout.)
+
+There would be a number of ways to go about this issue. One of them would be
+by means of a small bootstrap partition or initramfs or similar with appropriate
+binaries in a fixed location. This has the advantage of not requiring any
+modifications to the kernel itself and it should always work. However, it'd be
+quite a pain in the neck to maintain this separate, boot-only filesystem.
+
+An alternative would be making the bootloader pass a parameter to the kernel
+with the location of an appropriate init programme. This should be possible by
+default with a good deal of popular kernels and bootloaders, such as FreeBSD or
+Linux with GRUB or LILO, and is frequently done in practice with systems
+employing ``alternative init systems''. Since the bootloader needs to know the
+appropriate kernel to execute on the host system anyway, it is very likely that
+it would be possible to specify a binary that would at least execute properly on
+the target machine.
+
+The kernel itself could also be modified to search for a suitable binary to
+execute. This method is fairly invasive, as it requires direct modification of
+kernel source code, but it would nevertheless be possible and provide a clean and
+final solution to the issue.
 
 \newpage
 
