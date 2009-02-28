@@ -45,7 +45,8 @@ hierarchies, sometimes called "union mounts", this division seems quite obsolete
 \footnote{Operating Systems such as Plan 9 seem to agree with this.}.
 
 This paper will try to explore an alternative filesystem hierarchy scheme that
-should provide consistency for years to come.
+should provide consistency for years to come. Keep in mind that this is a draft,
+not yet a final document.
 
 \newpage
 
@@ -60,6 +61,76 @@ but it seems to be easier or more common to run binaries from a different
 architecture on the same operating system than it is to run binaries from a
 different operating system even when on the same architecture (although there
 are legimitate examples of both).
+
+\subsection{Hierarchical Elements}
+
+\subsubsection{/($os$/)?($architecture$/)?($subarchitecture$/)*: Architecture
+Classification}
+
+\subsubsection{/medium/($mediumname$)[0-9]*: Storage Media}
+Mountpoints for storage media belong under this
+
+\subsubsection{/home/($username$): Home Directories}
+
+\subsubsection{/service/($servicename$): Services}
+
+\subsubsection{/dev, /proc, /sys, /net, (...): Special Kernel Filesystems}
+These obviously have operating-system specific meaning and layout. They usually
+need to be kept in place (for example sysfs on Linux is specifically documented
+as being required to be mounted on /sys). Obviously only nodes that are actually
+going to be mounted need to be created.
+
+\subsection{Terminal Path Elements}
+
+\subsubsection{.+/bin: Binaries}
+All binaries (`executables') go into this directory. No exceptions, not even for
+``system binaries'', which would traditionally end up in /sbin. If you need
+finer-grained control or systematic clustering of related binaries, you could
+just use a subdirectory in /service instead.
+
+\subsubsection{.+/lib: Libraries}
+
+\subsubsection{.+/configuration or .+/etc: Configuration Files}
+
+\subsubsection{.+/documentation or .+/doc: Documentation}
+
+\subsubsection{.+/temporary or .+/tmp: Temporary Storage}
+
+\subsubsection{.+/work: Intermediary Storage}
+
+\subsection{Notable Differences to the FHS}
+
+\subsubsection{.+/sbin vs .+/bin}
+/sbin is pointless: system binaries may sound like a nice thing to hide from
+users, but deciding which of the binaries are system binaries and which are
+regular binaries is fairly arbitrary. For example the `ifconfig' programme is
+often put in /sbin instead of /bin, although there are legitimate uses of
+ifconfig for regular users. The programme's query functions immediately come to
+mind. Since this functionality works fine for regular users, they can just
+access the programme by entering the complete path, so the ``hiding'' was both
+point- and fruitless.
+
+Additionally the split is nearly impossible to perform systematically on
+operating systems that have finer-grained access control than a simple root/user
+divide. Operating systems like Plan9 or Linux\footnote{This may not seem obvious
+at first, but internally the Linux kernel is documented to use so-called
+`capabilities' that provide fine-grained access control to privileged functions}
+come to mind. With these operating systems, half the users would probably end up
+with /sbin in their path anyway since they'd have legitimate use for some system
+programme or another.
+
+For these reasons, there is no /sbin with this layout. If you really want to
+hide system binaries, use filesystem namespaces and union mounts instead, but
+remember that hiding them really is pointless.
+
+\subsubsection{/var/tmp vs /work}
+
+\subsubsection{/media vs /medium}
+/media was quite an odd inconsistency. Virtually everything else used words or
+abbreviations in the singular form, this is about the only place where a plural
+was used. The idea to split it up was good though, so there we go.
+
+\subsubsection{/var, /opt and /usr}
 
 \newpage
 
