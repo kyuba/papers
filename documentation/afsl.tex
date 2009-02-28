@@ -62,31 +62,84 @@ architecture on the same operating system than it is to run binaries from a
 different operating system even when on the same architecture (although there
 are legimitate examples of both).
 
+\subsection{General Notes}
+All of the elements that vary by target system are written $like this$. These
+are always assumed to be lowercase, without spaces or underscores. Use dashes
+(`-') as a delimiter when needed. For example, for $architecture$ use `x86-64'
+instead of `x86\_64' or `power-macintosh' instead of `power macintosh'. Also,
+use values that are consistent and generic across all architectures and
+operating system. That means, instead of `power-macintosh', what you really
+should be using is `powerpc-32' or `powerpc-64', and instead of `amd64' or
+`em64t' you should be using `x86-64'.
+
 \subsection{Hierarchical Elements}
+Paths discussed in this section are prefixes for other parts. Also refer to the
+appendix for values to be used for common variables in this section.
 
-\subsubsection{/($os$/)?($architecture$/)?($subarchitecture$/)*: Architecture
+\subsubsection{/($os$/)?($architecture$/)?($subarchitecture$/)*/: Architecture
 Classification}
+$os$ refers to a short code, hopefully a single word that would describe the
+intended target operating systems. Examples for this would be `linux' or
+`plan9'. $architecture$ is the general architecture class of the target host,
+for example `x86-32', `x86-64', `powerpc-32', etc. Unless there is only one
+conceivable implementation to refer to, this should always include the GPR or
+address space length of the architecture. For both $os$ and $architecture$, the
+value `generic' may be used if it doesn't matter which operating system or cpu
+architecture some of the content is, but it would still be desirable to keep the
+parent subdirectory count low and this could be achieved by means of a
+placeholder such as `generic'.
 
-\subsubsection{/medium/($mediumname$)[0-9]*: Storage Media}
+$subarchitecture$ is anything that could be used to further specify requirements
+that the binaries may have. This may be anything as specific as `sse3' or
+`altivec', or something more generic such as `i686' or just `little-endian'.
+System vendor specifications may also be used here, i.e. `sun', `intel',
+`apple', etc.
+
+As should be evident by the title above, more than one $subarchitecture$
+specification may be used. They must still be specified in reverse order of
+importance, that is, more generic specifications must come first, whereas
+more specific details should be last. This is to faciliate finding applicable
+files in the hierarchy.
+
+With all of these, redundant specifications may be omitted. For example, if the
+target system will always be a linux system, then it's allowed to drop the
+/linux prefix.
+
+Now, when actually locating applicable files or hierarchies, it should also be
+noted that more specific, applicable subhierarchies always take precedence over
+less specific but nevertheless applicable hierarchies. That is to say, files in
+`/linux/x86-32/sse2/bin' take precedence over `/linux/x86-32/bin' or even just
+`/bin'. This makes optimisations a lot more effective and easy, by being able to
+put binaries that are more heavily optimised for a certain cpu model in the
+filesystem without interfering with the other binaries on the system.
+
+\subsubsection{/medium/$mediumname$[0-9]*/: Storage Media}
 Mountpoints for storage media belong under this
 
-\subsubsection{/home/($username$): Home Directories}
+\subsubsection{/home/$username$/: Home Directories}
+You may use the architecture classification as discussed above in subdirectories
+below here if necessary.
 
-\subsubsection{/service/($servicename$): Services}
+\subsubsection{/service/$servicename$/: Services}
+You may use the architecture classification as discussed above in subdirectories
+below here if necessary.
 
 \subsubsection{/dev, /proc, /sys, /net, (...): Special Kernel Filesystems}
 These obviously have operating-system specific meaning and layout. They usually
 need to be kept in place (for example sysfs on Linux is specifically documented
 as being required to be mounted on /sys). Obviously only nodes that are actually
-going to be mounted need to be created.
+going to be mounted need to be created on a filesystem, but having more than
+necessary doesn't seem to hurt, so it's unspecified whether or not unavailable
+special filesystems still have their respective directories created or not.
 
-\subsection{Terminal Path Elements}
+\subsection{Final Path Elements}
+Paths in this section are the ending parts of a sequence of path elements.
 
 \subsubsection{.+/bin: Binaries}
 All binaries (`executables') go into this directory. No exceptions, not even for
 ``system binaries'', which would traditionally end up in /sbin. If you need
-finer-grained control or systematic clustering of related binaries, you could
-just use a subdirectory in /service instead.
+finer-grained control or systematic clustering of related binaries, use a
+subdirectory in /service instead.
 
 \subsubsection{.+/lib: Libraries}
 
@@ -131,6 +184,12 @@ abbreviations in the singular form, this is about the only place where a plural
 was used. The idea to split it up was good though, so there we go.
 
 \subsubsection{/var, /opt and /usr}
+
+\newpage
+
+\section{Usage}
+
+\subsection{Environment Variables}
 
 \newpage
 
