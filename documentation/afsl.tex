@@ -4,7 +4,7 @@
 
 \renewcommand\familydefault{\sfdefault}
 
-\title{Advanced Filesystem Layout}
+\title{Advanced Filesystem Layout, AFSL Version 1}
 \author{Magnus Achim Deininger}
 
 
@@ -68,7 +68,7 @@ are always assumed to be lowercase, without spaces or underscores. Use dashes
 (`-') as a delimiter when needed. For example, for $architecture$ use `x86-64'
 instead of `x86\_64' or `power-macintosh' instead of `power macintosh'. Also,
 use values that are consistent and generic across all architectures and
-operating system. That means, instead of `power-macintosh', what you really
+operating systems. That means, instead of `power-macintosh', what you really
 should be using is `powerpc-32' or `powerpc-64', and instead of `amd64' or
 `em64t' you should be using `x86-64'.
 
@@ -240,6 +240,26 @@ The kernel itself could also be modified to search for a suitable binary to
 execute. This method is fairly invasive, as it requires direct modification of
 kernel source code, but it would nevertheless be possible and provide a clean and
 final solution to the issue.
+
+\newpage
+
+\begin{appendix}
+\section{Path Elements}
+The values listed here are to be considered mandatory to follow. If you don't
+like some of them, you can still omit them most of the time, or suggest better
+alternatives.
+
+\subsection{$os$: Operating System Codes}
+
+\subsection{$architecture$: CPU Architecture Codes}
+
+\subsection{$subarchitecture$: CPU Sub-Architecture Codes}
+
+\subsection{$mediumname$: Storage Medium Codes}
+
+\subsection{$servicename$: Service Codes}
+
+\end{appendix}
 
 \newpage
 
